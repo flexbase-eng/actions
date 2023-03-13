@@ -11,18 +11,19 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }}
+    - id: cli
+      run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }}
       shell: bash
 outputs:
   NETLIFY_OUTPUT:
     description: 'Netlify CLI output'
-    value: ${{ steps.script.outputs.NETLIFY_OUTPUT }}
+    value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
   NETLIFY_LOGS_URL:
     description: 'Netlify deployment logs'
-    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).logs }}
+    value: ${{ fromJson(steps.cli.outputs.NETLIFY_OUTPUT).logs }}
   NETLIFY_DRAFT_URL:
     description: 'Draft site'
-    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).deploy_url }}
+    value: ${{ fromJson(steps.cli.outputs.NETLIFY_OUTPUT).deploy_url }}
   NETLIFY_PROD_URL:
     description: 'Production site'
-    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).url }}
+    value: ${{ fromJson(steps.cli.outputs.NETLIFY_OUTPUT).url }}
