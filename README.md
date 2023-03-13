@@ -1,2 +1,5 @@
-# actions
-GitHub Actions for Flexbase
+# GitHub Actions
+
+This repository contains GitHub Actions for Flexbase
+
+## Usage

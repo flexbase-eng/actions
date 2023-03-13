@@ -1,0 +1,28 @@
+name: 'Netlify CLI'
+description: 'Wraps the Netlify CLI'
+author: 'Flexbase Technologies <https://github.com/flexbase-eng>'
+branding:
+  color: '#FF5745'
+  icon: netlify
+inputs:
+  args:
+    description: 'Any command from https://cli.netlify.com/commands'
+    required: true
+runs:
+  using: composite
+  steps:
+    - run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }}
+      shell: bash
+outputs:
+  NETLIFY_OUTPUT:
+    description: 'Netlify CLI output'
+    value: ${{ steps.script.outputs.NETLIFY_OUTPUT }}
+  NETLIFY_LOGS_URL:
+    description: 'Netlify deployment logs'
+    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).logs }}
+  NETLIFY_DRAFT_URL:
+    description: 'Draft site'
+    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).deploy_url }}
+  NETLIFY_PROD_URL:
+    description: 'Production site'
+    value: ${{ fromJson(steps.script.outputs.NETLIFY_OUTPUT).url }}
