@@ -15,6 +15,6 @@ runs:
       run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }}
       shell: bash
 outputs:
-  NETLIFY_OUTPUT:
+  netlify_output:
     description: 'Netlify CLI output'
     value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
