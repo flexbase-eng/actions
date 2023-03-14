@@ -14,6 +14,13 @@ runs:
     - id: cli
       run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }} --json
       shell: bash
+    - name: cli_output_debug
+      env:
+        test_output: ${{ steps.cli.outputs.netlify_output }}
+      run: |
+        echo "$test_output"
+        echo "${{ steps.cli.outputs.netlify_output }}"
+      shell: bash
 outputs:
   netlify_output:
     description: 'Netlify json output'
