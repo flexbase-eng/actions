@@ -20,4 +20,4 @@ outputs:
     value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
   netlify_json:
     description: 'Netlify json output'
-    value: ${{ fromJson(steps.cli.outputs.NETLIFY_OUTPUT) }}
+    value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
