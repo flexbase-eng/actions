@@ -8,8 +8,6 @@ inputs:
   args:
     description: 'Any command from https://cli.netlify.com/commands'
     required: true
-outputs:
-  netlify_output: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
 runs:
   using: composite
   steps:
@@ -18,3 +16,5 @@ runs:
       shell: bash
     - id: output
       run: echo ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
+outputs:
+  netlify_output: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
