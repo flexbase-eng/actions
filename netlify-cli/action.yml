@@ -18,4 +18,6 @@ runs:
       run: echo ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
       shell: bash
 outputs:
-  netlify_output: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
+  netlify_output:
+    description: 'Netlify json output'
+    value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
