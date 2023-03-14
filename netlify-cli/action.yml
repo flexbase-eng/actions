@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
     - id: cli
-      run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }}
+      run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }} --json
       shell: bash
 outputs:
   netlify_output:
