@@ -8,13 +8,13 @@ inputs:
   args:
     description: 'Any command from https://cli.netlify.com/commands'
     required: true
+outputs:
+  netlify_output: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
 runs:
   using: composite
   steps:
     - id: cli
       run: $GITHUB_ACTION_PATH/action.sh ${{ inputs.args }} --json
       shell: bash
-outputs:
-  netlify_output:
-    description: 'Netlify output'
-    value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
+    - id: output
+      run: echo ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
