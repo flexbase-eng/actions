@@ -18,6 +18,3 @@ outputs:
   netlify_output:
     description: 'Netlify output'
     value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
-  netlify_json:
-    description: 'Netlify json output'
-    value: ${{ steps.cli.outputs.NETLIFY_OUTPUT }}
