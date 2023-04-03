@@ -19,5 +19,8 @@ outputs:
     description: 'Netlify json output'
     value: ${{ steps.cli.outputs.netlify_output }}
   deploy_url:
-    description: 'Netlify json output'
+    description: 'Netlify deployment url'
     value: ${{ fromJson(steps.cli.outputs.netlify_output).deploy_url }}
+  prod_url:
+    description: 'Netlify production url'
+    value: ${{ fromJson(steps.cli.outputs.netlify_output).url }}
