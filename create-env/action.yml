@@ -16,8 +16,12 @@ inputs:
   file_data:
     description: 'The data to write to the file'
     required: true
+  file_data_format:
+    description: 'The format of the data, either dotenv or json. Default is dotenv'
+    required: true
+    default: 'dotenv'
   file_format:
-    description: 'The format of the data'
+    description: 'The format of the file, either dotenv or json. Default is dotenv'
     required: true
     default: 'dotenv'
 
