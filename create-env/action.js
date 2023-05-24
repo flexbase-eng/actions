@@ -42,12 +42,10 @@ const getType = (value) => {
   return typeof value;
 };
 
-const dotenvParse = (fileData) => {
-  const fileData = dotenv.parse(fileData);
-
+const dotenvParse = (data) => {
   const obj = {};
 
-  Object.entries(fileData).forEach((entry) => {
+  Object.entries(dotenv.parse(data)).forEach((entry) => {
     const entryType = getType(entry[1]);
     obj[entry[0]] = entryType === 'number' ? Number(entry[1]) : entryType === 'boolean' ? Boolean(entry[1]) : entry[1];
   });
