@@ -1,13 +1,13 @@
-import { getInput, info, setFailed } from '@actions/core';
-import { existsSync, readFileSync, writeFile } from 'fs';
-import { join } from 'path';
-import { parse } from 'dotenv';
+const core = require('@actions/core');
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
 
-const fileName = getInput('file_name');
-const filePath = getInput('file_path');
-const fileData = getInput('file_data');
-const fileDataFormat = getInput('file_data_format');
-const fileFormat = getInput('file_format');
+const fileName = core.getInput('file_name');
+const filePath = core.getInput('file_path');
+const fileData = core.getInput('file_data');
+const fileDataFormat = core.getInput('file_data_format');
+const fileFormat = core.getInput('file_format');
 
 const isNumber = (value) => {
   if (typeof value === 'number') {
@@ -45,7 +45,7 @@ const getType = (value) => {
 const dotenvParse = (data) => {
   const obj = {};
 
-  Object.entries(parse(data)).forEach((entry) => {
+  Object.entries(dotenv.parse(data)).forEach((entry) => {
     const entryType = getType(entry[1]);
     obj[entry[0]] = entryType === 'number' ? Number(entry[1]) : entryType === 'boolean' ? Boolean(entry[1]) : entry[1];
   });
@@ -53,19 +53,19 @@ const dotenvParse = (data) => {
   return obj;
 };
 
-async function main() {
+function main() {
   try {
-    const outputFile = join(filePath, fileName);
+    const outputFile = path.join(filePath, fileName);
 
     let existingObj = {};
 
-    if (existsSync(outputFile)) {
+    if (fs.existsSync(outputFile)) {
       if (fileFormat === 'javascript') {
-        info(`${process.cwd()}`);
-        existingObj = await import(outputFile);
+        core.info(`${process.cwd()}`);
+        existingObj = require(outputFile);
       } else {
-        const existingBuffer = readFileSync(outputFile);
-        existingObj = fileFormat === 'dotenv' ? parse(existingBuffer) : JSON.parse(existingBuffer);
+        const existingBuffer = fs.readFileSync(outputFile);
+        existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
       }
     }
 
@@ -85,13 +85,13 @@ async function main() {
       output = JSON.stringify(existing);
     }
 
-    writeFile(outputFile, output, function (error) {
+    fs.writeFile(outputFile, output, function (error) {
       if (error) {
-        setFailed(error.message);
+        core.setFailed(error.message);
       }
     });
   } catch (error) {
-    setFailed(error.message);
+    core.setFailed(error.message);
   }
 }
 
