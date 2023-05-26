@@ -61,7 +61,7 @@ function main() {
 
     if (fs.existsSync(outputFile)) {
       if (fileFormat === 'javascript') {
-        core.log(`require ${outputFile}`);
+        core.info(`require ${outputFile}`);
         const rtenv = require(outputFile);
         existingObj = rtenv;
       } else {
