@@ -72,18 +72,18 @@ async function main() {
 
     const parsedFileData = fileDataFormat == 'dotenv' ? dotenvParse(fileData) : JSON.parse(fileData);
 
-    const existing = { ...existingObj, ...parsedFileData };
+    const outputObj = { ...existingObj, ...parsedFileData };
 
     let output = '';
 
     if (fileFormat === 'javascript') {
-      output = `export default ${JSON.stringify(jsonObj)} ;`;
+      output = `export default ${JSON.stringify(outputObj)} ;`;
     } else if (fileFormat === 'dotenv') {
-      output = Object.entries(existing)
+      output = Object.entries(outputObj)
         .map((x) => `${x[0]}=${x[1]}`)
         .join('\n');
     } else if (fileFormat === 'json') {
-      output = JSON.stringify(existing);
+      output = JSON.stringify(outputObj);
     }
 
     fs.writeFile(outputFile, output, function (error) {
