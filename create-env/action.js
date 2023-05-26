@@ -53,7 +53,7 @@ const dotenvParse = (data) => {
   return obj;
 };
 
-function main() {
+async function main() {
   try {
     const outputFile = path.join(filePath, fileName);
 
@@ -63,7 +63,7 @@ function main() {
       if (fileFormat === 'javascript') {
         const jsPath = path.join(process.cwd(), outputFile);
         core.info(`${jsPath}`);
-        existingObj = require(jsPath);
+        existingObj = await import(jsPath);
       } else {
         const existingBuffer = fs.readFileSync(outputFile);
         existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
