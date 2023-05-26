@@ -53,7 +53,7 @@ const dotenvParse = (data) => {
   return obj;
 };
 
-async function main() {
+function main() {
   try {
     const outputFile = path.join(filePath, fileName);
 
@@ -61,12 +61,12 @@ async function main() {
 
     if (fs.existsSync(outputFile)) {
       if (fileFormat === 'javascript') {
-        const rtenv = await import(outputFile);
+        core.log(`require ${outputFile}`);
+        const rtenv = require(outputFile);
         existingObj = rtenv;
-      } else if (fileFormat === 'dotenv') {
-        existingObj = dotenv.parse(existingBuffer);
-      } else if (fileFormat === 'json') {
-        existingObj = JSON.parse(existingBuffer);
+      } else {
+        const existingBuffer = fs.readFileSync(outputFile);
+        existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
       }
     }
 
