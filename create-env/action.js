@@ -1,13 +1,13 @@
-const core = require('@actions/core');
-const fs = require('fs');
-const path = require('path');
-const dotenv = require('dotenv');
+import { getInput, info, setFailed } from '@actions/core';
+import { existsSync, readFileSync, writeFile } from 'fs';
+import { join } from 'path';
+import { parse } from 'dotenv';
 
-const fileName = core.getInput('file_name');
-const filePath = core.getInput('file_path');
-const fileData = core.getInput('file_data');
-const fileDataFormat = core.getInput('file_data_format');
-const fileFormat = core.getInput('file_format');
+const fileName = getInput('file_name');
+const filePath = getInput('file_path');
+const fileData = getInput('file_data');
+const fileDataFormat = getInput('file_data_format');
+const fileFormat = getInput('file_format');
 
 const isNumber = (value) => {
   if (typeof value === 'number') {
@@ -45,7 +45,7 @@ const getType = (value) => {
 const dotenvParse = (data) => {
   const obj = {};
 
-  Object.entries(dotenv.parse(data)).forEach((entry) => {
+  Object.entries(parse(data)).forEach((entry) => {
     const entryType = getType(entry[1]);
     obj[entry[0]] = entryType === 'number' ? Number(entry[1]) : entryType === 'boolean' ? Boolean(entry[1]) : entry[1];
   });
@@ -53,20 +53,19 @@ const dotenvParse = (data) => {
   return obj;
 };
 
-function main() {
+async function main() {
   try {
-    const outputFile = path.join(filePath, fileName);
+    const outputFile = join(filePath, fileName);
 
     let existingObj = {};
 
-    if (fs.existsSync(outputFile)) {
+    if (existsSync(outputFile)) {
       if (fileFormat === 'javascript') {
-        core.info(`require ${outputFile}`);
-        const rtenv = require(outputFile);
-        existingObj = rtenv;
+        info(`${process.cwd()}`);
+        existingObj = await import(outputFile);
       } else {
-        const existingBuffer = fs.readFileSync(outputFile);
-        existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
+        const existingBuffer = readFileSync(outputFile);
+        existingObj = fileFormat === 'dotenv' ? parse(existingBuffer) : JSON.parse(existingBuffer);
       }
     }
 
@@ -74,20 +73,25 @@ function main() {
 
     const existing = { ...existingObj, ...parsedFileData };
 
-    const output =
-      fileFormat === 'json' || fileFormat === 'javascript'
-        ? JSON.stringify(existing)
-        : Object.entries(existing)
-            .map((x) => `${x[0]}=${x[1]}`)
-            .join('\n');
+    let output = '';
 
-    fs.writeFile(outputFile, output, function (error) {
+    if (fileFormat === 'javascript') {
+      output = `export default ${JSON.stringify(jsonObj)} ;`;
+    } else if (fileFormat === 'dotenv') {
+      output = Object.entries(existing)
+        .map((x) => `${x[0]}=${x[1]}`)
+        .join('\n');
+    } else if (fileFormat === 'json') {
+      output = JSON.stringify(existing);
+    }
+
+    writeFile(outputFile, output, function (error) {
       if (error) {
-        core.setFailed(error.message);
+        setFailed(error.message);
       }
     });
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 }
 
