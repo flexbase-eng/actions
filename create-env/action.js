@@ -61,8 +61,9 @@ function main() {
 
     if (fs.existsSync(outputFile)) {
       if (fileFormat === 'javascript') {
-        core.info(`${process.cwd()}`);
-        existingObj = require(outputFile);
+        const jsPath = path.join(process.cwd(), outputFile);
+        core.info(`${jsPath}`);
+        existingObj = require(jsPath);
       } else {
         const existingBuffer = fs.readFileSync(outputFile);
         existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
