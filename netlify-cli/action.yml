@@ -2,7 +2,7 @@ name: 'Netlify CLI'
 description: 'Wraps the Netlify CLI'
 author: 'Flexbase Technologies <https://github.com/flexbase-eng>'
 branding:
-  color: '#FF5745'
+  color: 'orange'
   icon: upload-cloud
 inputs:
   args:

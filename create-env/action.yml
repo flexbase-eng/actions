@@ -21,7 +21,7 @@ inputs:
     required: true
     default: 'dotenv'
   file_format:
-    description: 'The format of the file, either dotenv or json. Default is dotenv'
+    description: 'The format of the file, either dotenv, json, or javascript. Default is dotenv'
     required: true
     default: 'dotenv'
 
