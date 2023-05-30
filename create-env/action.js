@@ -13,8 +13,9 @@ const isNumber = (value) => {
   if (typeof value === 'number') {
     return true;
   }
+  if (typeof value !== 'string') return false;
 
-  return typeof value === 'string' && !Number.isNaN(value) && !Number.isNaN(Number.parseFloat(value));
+  return !Number.isNaN(Number(value)) && !Number.isNaN(Number.parseFloat(value));
 };
 
 const isBoolean = (value) => {
