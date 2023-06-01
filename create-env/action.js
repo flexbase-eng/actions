@@ -64,8 +64,8 @@ async function main() {
       if (fileFormat === 'javascript') {
         const jsPath = path.join(process.cwd(), outputFile);
         core.info(`${jsPath}`);
-        const { js } = await import(jsPath);
-        existingObj = js;
+        const js = await import(jsPath);
+        existingObj = js.default;
       } else {
         const existingBuffer = fs.readFileSync(outputFile);
         existingObj = fileFormat === 'dotenv' ? dotenv.parse(existingBuffer) : JSON.parse(existingBuffer);
