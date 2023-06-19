@@ -88,6 +88,8 @@ async function main() {
       output = JSON.stringify(outputObj);
     }
 
+    core.setOutput('file_output', output);
+
     fs.writeFile(outputFile, output, function (error) {
       if (error) {
         core.setFailed(error.message);
