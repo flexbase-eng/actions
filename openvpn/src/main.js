@@ -3,6 +3,8 @@ import path, { sep } from 'path';
 import core from '@actions/core';
 import { exec } from './exec.js';
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 export const main = callback => {
   const config = core.getInput('config', { required: true });
   const autoloadConfig = core.getInput('autoload-config');
@@ -33,9 +35,11 @@ export const main = callback => {
     throw error;
   }
 
-  exec(`sudo openvpn3 sessions-list`);
+  sleep(1000).then(() => {
+    exec(`sudo openvpn3 sessions-list | grep -io 'client connected'`);
+    callback(configPath);
+  });
 
-  callback(configPath);
   // tail.on('line', data => {
   //   core.info(data);
   //   if (data.includes('Initialization Sequence Completed')) {
