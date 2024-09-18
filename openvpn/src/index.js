@@ -1,6 +1,6 @@
 import core from '@actions/core';
-import main from './main.js';
-import post from './post.js';
+import { main } from './main.js';
+import { post } from './post.js';
 
 const isPost = core.getState('isPost');
 

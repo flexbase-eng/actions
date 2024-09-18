@@ -1,7 +1,7 @@
 import core from '@actions/core';
-import exec from './exec.js';
+import { exec } from './exec.js';
 
-export const run = configPath => {
+export const post = configPath => {
   if (!configPath) {
     return;
   }
@@ -18,5 +18,3 @@ export const run = configPath => {
     core.warning(error.message);
   }
 };
-
-export default run;

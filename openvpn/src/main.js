@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import core from '@actions/core';
-import exec from './exec.js';
+import { exec } from './exec.js';
 // const Tail = require('tail').Tail;
 
-export const run = callback => {
+export const main = callback => {
   const config = core.getInput('config', { required: true });
   const autoloadConfig = core.getInput('autoload-config');
 
@@ -21,9 +21,9 @@ export const run = callback => {
   // const tail = new Tail('openvpn.log');
 
   try {
-    exec(`sudo openvpn3-autoload --directory ${configPath}`);
+    exec(`sudo openvpn3-autoload -h`);
 
-    exec(`while [ -z "$(sudo openvpn3 sessions-list | grep -io 'client connected')" ]; do sleep 0.1; done`);
+    exec(`sudo openvpn3-autoload --directory ${configPath}`);
 
     // exec(`sudo openvpn --config ${config} --daemon --log openvpn.log --writepid openvpn.pid`);
   } catch (error) {
@@ -31,6 +31,8 @@ export const run = callback => {
     // tail.unwatch();
     throw error;
   }
+
+  //exec(`while [ -z "$(sudo openvpn3 sessions-list | grep -io 'client connected')" ]; do sleep 0.1; done`);
 
   callback(configPath);
   // tail.on('line', data => {
@@ -49,5 +51,3 @@ export const run = callback => {
   //   tail.unwatch();
   // }, 15000);
 };
-
-export default run;

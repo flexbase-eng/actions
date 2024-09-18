@@ -10,5 +10,3 @@ export const exec = cmd => {
   }
   core.info(res.stdout);
 };
-
-export default exec;
