@@ -7,12 +7,18 @@ export const main = callback => {
   const config = core.getInput('config', { required: true });
   const autoloadConfig = core.getInput('autoload-config');
 
-  const configPath = fs.mkdtempSync(`${process.env.HOME}${sep}.openvpn`);
+  const configPath = fs.mkdtempSync(`${process.env.HOME}${sep}`);
 
-  fs.writeFileSync(path.join(configPath, 'config.ovpn'), config);
+  const configFile = path.join(configPath, 'config.ovpn');
+  const autoloadFile = path.join(configPath, 'config.autoload');
+
+  core.info(`writing config to ${configFile}`);
+
+  fs.writeFileSync(configFile, config);
 
   if (autoloadConfig) {
-    fs.writeFileSync(path.join(configPath, 'config.autoload'), autoloadConfig);
+    core.info(`writing autoload to ${autoloadFile}`);
+    fs.writeFileSync(autoloadFile, autoloadConfig);
   }
 
   // prepare log file
@@ -27,7 +33,7 @@ export const main = callback => {
     throw error;
   }
 
-  //exec(`while [ -z "$(sudo openvpn3 sessions-list | grep -io 'client connected')" ]; do sleep 0.1; done`);
+  exec(`sudo openvpn3 sessions-list`);
 
   callback(configPath);
   // tail.on('line', data => {
