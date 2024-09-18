@@ -36,7 +36,7 @@ export const main = callback => {
   }
 
   sleep(1000).then(() => {
-    exec(`sudo openvpn3 sessions-list | grep -io 'client connected'`);
+    exec(`sudo openvpn3 sessions-list`);
     callback(configPath);
   });
 
