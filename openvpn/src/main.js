@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path, { sep } from 'path';
 import core from '@actions/core';
 import { exec } from './exec.js';
 
@@ -7,7 +7,7 @@ export const main = callback => {
   const config = core.getInput('config', { required: true });
   const autoloadConfig = core.getInput('autoload-config');
 
-  const configPath = fs.mkdtempSync('.openvpn');
+  const configPath = fs.mkdtempSync(`${process.env.HOME}${sep}.openvpn`);
 
   fs.writeFileSync(path.join(configPath, 'config.ovpn'), config);
 
