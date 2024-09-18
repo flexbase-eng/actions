@@ -1,7 +1,7 @@
 import shelljsExec from 'shelljs.exec';
 import core from '@actions/core';
 
-const exec = cmd => {
+export const exec = cmd => {
   core.info(`running command: ${cmd}`);
   const res = shelljsExec(cmd);
   if (res.code !== 0) {
@@ -11,4 +11,4 @@ const exec = cmd => {
   core.info(res.stdout);
 };
 
-module.exports = exec;
+export default exec;

@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import core from '@actions/core';
-import exec from './exec';
+import exec from './exec.js';
 // const Tail = require('tail').Tail;
 
-const run = callback => {
+export const run = callback => {
   const config = core.getInput('config', { required: true });
   const autoloadConfig = core.getInput('autoload-config');
 
@@ -50,4 +50,4 @@ const run = callback => {
   // }, 15000);
 };
 
-module.exports = run;
+export default run;

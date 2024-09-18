@@ -1,7 +1,7 @@
 import core from '@actions/core';
-import exec from './exec';
+import exec from './exec.js';
 
-const run = configPath => {
+export const run = configPath => {
   if (!configPath) {
     return;
   }
@@ -19,4 +19,4 @@ const run = configPath => {
   }
 };
 
-module.exports = run;
+export default run;
