@@ -4,7 +4,7 @@ import core from '@actions/core';
 import { exec } from './exec.js';
 import { Tail } from 'tail';
 
-export const main = callback => {
+export const main = () => {
   const config = core.getInput('config', { required: true });
 
   const configPath = fs.mkdtempSync(`${process.env.HOME}${sep}`);
@@ -12,6 +12,7 @@ export const main = callback => {
   const configFile = path.join(configPath, 'config.ovpn');
 
   core.info(`writing config to ${configFile}`);
+  core.saveState('configPath', configPath);
 
   fs.writeFileSync(configFile, config);
 
@@ -22,7 +23,7 @@ export const main = callback => {
   try {
     exec(`sudo openvpn --config ${configFile} --daemon --log openvpn.log --writepid openvpn.pid`);
   } catch (error) {
-    core.error(fs.readFileSync('openvpn.log', 'utf8'));
+    core.setFailed(fs.readFileSync('openvpn.log', 'utf8'));
     tail.unwatch();
     throw error;
   }
@@ -34,7 +35,7 @@ export const main = callback => {
       clearTimeout(timer);
       const pid = fs.readFileSync('openvpn.pid', 'utf8').trim();
       core.info(`VPN connected successfully. Daemon PID: ${pid}`);
-      callback(pid, configPath);
+      core.saveState('pid', pid);
     }
   });
 
@@ -43,3 +44,5 @@ export const main = callback => {
     tail.unwatch();
   }, 15000);
 };
+
+main();

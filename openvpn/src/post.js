@@ -1,7 +1,10 @@
 import core from '@actions/core';
 import { exec } from './exec.js';
 
-export const post = (pid, configPath) => {
+export const post = () => {
+  const configPath = core.getState('configPath');
+  const pid = core.getState('pid');
+
   if (pid) {
     try {
       exec(`sudo kill ${pid} || true`);
@@ -18,3 +21,5 @@ export const post = (pid, configPath) => {
     }
   }
 };
+
+post();

@@ -12,3 +12,5 @@ export const pre = () => {
     throw error;
   }
 };
+
+pre();

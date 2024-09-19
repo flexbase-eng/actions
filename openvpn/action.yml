@@ -10,5 +10,5 @@ inputs:
 runs:
   using: "node20"
   pre: "src/pre.js"
-  main: "src/index.js"
-  post: "src/index.js"
+  main: "src/main.js"
+  post: "src/post.js"
