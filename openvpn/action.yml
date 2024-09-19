@@ -1,5 +1,5 @@
 name: "OpenVPN-Connect"
-description: "connect to OpenVPN server"
+description: "Connect to an OpenVPN server"
 branding:
   icon: "lock"
   color: "green"
@@ -7,10 +7,8 @@ inputs:
   config:
     description: "OpenVPN profile file (.ovpn or .conf)."
     required: true
-  autoload-config:
-    description: "VPN Autoload Config is the username and password file (.autoload) to support auth-user-pass"
-    required: false
 runs:
   using: "node20"
+  pre: "src/pre.js"
   main: "src/index.js"
   post: "src/index.js"

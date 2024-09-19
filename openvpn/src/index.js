@@ -7,15 +7,19 @@ const isPost = core.getState('isPost');
 if (isPost) {
   // cleanup
   const configPath = core.getState('configPath');
+  const pid = core.getState('pid');
   try {
-    post(configPath);
+    post(pid, configPath);
   } catch (error) {
     core.setFailed(error.message);
   }
 } else {
   // main
   try {
-    main(configPath => core.saveState('configPath', configPath));
+    main((pid, configPath) => {
+      core.saveState('pid', pid);
+      core.saveState('configPath', configPath);
+    });
   } catch (error) {
     core.setFailed(error.message);
   } finally {

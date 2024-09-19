@@ -2,57 +2,44 @@ import fs from 'fs';
 import path, { sep } from 'path';
 import core from '@actions/core';
 import { exec } from './exec.js';
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+import { Tail } from 'tail';
 
 export const main = callback => {
   const config = core.getInput('config', { required: true });
-  const autoloadConfig = core.getInput('autoload-config');
 
   const configPath = fs.mkdtempSync(`${process.env.HOME}${sep}`);
 
   const configFile = path.join(configPath, 'config.ovpn');
-  const autoloadFile = path.join(configPath, 'config.autoload');
 
   core.info(`writing config to ${configFile}`);
 
   fs.writeFileSync(configFile, config);
 
-  if (autoloadConfig) {
-    core.info(`writing autoload to ${autoloadFile}`);
-    fs.writeFileSync(autoloadFile, autoloadConfig);
-  }
-
   // prepare log file
-  // fs.writeFileSync('openvpn.log', '');
-  // const tail = new Tail('openvpn.log');
+  fs.writeFileSync('openvpn.log', '');
+  const tail = new Tail('openvpn.log');
 
   try {
-    exec(`sudo openvpn3-autoload --directory ${configPath}`);
-
-    // exec(`sudo openvpn --config ${config} --daemon --log openvpn.log --writepid openvpn.pid`);
+    exec(`sudo openvpn --config ${configFile} --daemon --log openvpn.log --writepid openvpn.pid`);
   } catch (error) {
+    core.error(fs.readFileSync('openvpn.log', 'utf8'));
+    tail.unwatch();
     throw error;
   }
 
-  sleep(1000).then(() => {
-    exec(`sudo openvpn3 sessions-list`);
-    callback(configPath);
+  tail.on('line', data => {
+    core.info(data);
+    if (data.includes('Initialization Sequence Completed')) {
+      tail.unwatch();
+      clearTimeout(timer);
+      const pid = fs.readFileSync('openvpn.pid', 'utf8').trim();
+      core.info(`VPN connected successfully. Daemon PID: ${pid}`);
+      callback(pid, configPath);
+    }
   });
 
-  // tail.on('line', data => {
-  //   core.info(data);
-  //   if (data.includes('Initialization Sequence Completed')) {
-  //     tail.unwatch();
-  //     clearTimeout(timer);
-  //     const pid = fs.readFileSync('openvpn.pid', 'utf8').trim();
-  //     core.info(`VPN connected successfully. Daemon PID: ${pid}`);
-  //     callback(pid);
-  //   }
-  // });
-
-  // const timer = setTimeout(() => {
-  //   core.setFailed('VPN connection failed.');
-  //   tail.unwatch();
-  // }, 15000);
+  const timer = setTimeout(() => {
+    core.setFailed('VPN connection failed.');
+    tail.unwatch();
+  }, 15000);
 };
